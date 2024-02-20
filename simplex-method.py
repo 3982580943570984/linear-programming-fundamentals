@@ -1,7 +1,8 @@
-import numpy as np
-import pandas as pd
-from numpy._typing import NDArray
 from fractions import Fraction
+
+import numpy as np
+from numpy._typing import NDArray
+import pandas as pd
 from tabulate import tabulate
 
 
@@ -25,18 +26,18 @@ def simplex_method(c: NDArray, A: NDArray, b: NDArray):
     tableau = np.hstack([A, np.eye(num_constraints), b.reshape(-1, 1)])
     tableau = np.vstack([tableau, c])
 
-    var_names = (
+    vars = (
         ["x" + str(i)
          for i in range(1, num_vars + num_constraints + 1)] + ["b"])
 
-    index_names = [
+    basis = [
         "x" + str(i)
         for i in range(num_constraints + 1, num_constraints + tableau.shape[0])
     ] + ["Z"]
 
     while True:
         # Вывод симплекс-таблицы в начале итерации
-        print_simplex_tableau(tableau, var_names, index_names)
+        print_simplex_tableau(tableau, vars, basis)
 
         # Проверка на оптимальность
         if np.all(tableau[-1, :-1] >= 0):
@@ -64,7 +65,7 @@ def simplex_method(c: NDArray, A: NDArray, b: NDArray):
         pivot_row = np.argmin(ratios)
 
         # Производим замену в базисе
-        index_names[pivot_row] = "x" + str(pivot_col + 1)
+        basis[pivot_row] = "x" + str(pivot_col + 1)
 
         # Выбор разрешающего коэффициента
         pivot_element = tableau[pivot_row, pivot_col]
@@ -80,7 +81,7 @@ def simplex_method(c: NDArray, A: NDArray, b: NDArray):
     # Определение решения
     x = np.zeros(num_vars + num_constraints)
     for i in range(num_vars):
-        variable_index = int(index_names[i][1:]) - 1
+        variable_index = int(basis[i][1:]) - 1
         variable_value = tableau[i, -1]
         x[variable_index] = variable_value
 
