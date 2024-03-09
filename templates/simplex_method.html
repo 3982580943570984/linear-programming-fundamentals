@@ -1,0 +1,265 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>Результаты симплекс-метода</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+    </head>
+    <body>
+    <h2>Итерация 0</h2><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>x1</th>
+      <th>x2</th>
+      <th>x3</th>
+      <th>x4</th>
+      <th>x5</th>
+      <th>x6</th>
+      <th>b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>4</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1800</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>2000</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>3200</td>
+    </tr>
+    <tr>
+      <td>-6</td>
+      <td>-8</td>
+      <td>-5</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table><h2>Итерация 1</h2><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>x1</th>
+      <th>x2</th>
+      <th>x3</th>
+      <th>x4</th>
+      <th>x5</th>
+      <th>x6</th>
+      <th>b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>3</td>
+      <td>0</td>
+      <td>1/2</td>
+      <td>1</td>
+      <td>-1/2</td>
+      <td>0</td>
+      <td>800</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>1</td>
+      <td>1/2</td>
+      <td>0</td>
+      <td>1/2</td>
+      <td>0</td>
+      <td>1000</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>-1</td>
+      <td>1</td>
+      <td>1200</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0</td>
+      <td>-1</td>
+      <td>0</td>
+      <td>4</td>
+      <td>0</td>
+      <td>8000</td>
+    </tr>
+  </tbody>
+</table><h2>Итерация 2</h2><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>x1</th>
+      <th>x2</th>
+      <th>x3</th>
+      <th>x4</th>
+      <th>x5</th>
+      <th>x6</th>
+      <th>b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>6</td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>-1</td>
+      <td>0</td>
+      <td>1600</td>
+    </tr>
+    <tr>
+      <td>-2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>-1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>-1</td>
+      <td>1</td>
+      <td>1200</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>3</td>
+      <td>0</td>
+      <td>9600</td>
+    </tr>
+  </tbody>
+</table>
+    <h2>Интерпретация оптимального решения</h2>
+    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Основные переменные и целевая функция</th>
+      <th>Оптимальные значения</th>
+      <th>Интерпретация</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>x2</td>
+      <td>200.0</td>
+      <td>Объем производства продукции П2 должен составлять 200.00 ед. за исследуемый временной период.</td>
+    </tr>
+    <tr>
+      <td>x3</td>
+      <td>1600.0</td>
+      <td>Объем производства продукции П3 должен составлять 1600.00 ед. за исследуемый временной период.</td>
+    </tr>
+    <tr>
+      <td>x6</td>
+      <td>1200.0</td>
+      <td>Объем производства продукции П6 должен составлять 1200.00 ед. за исследуемый временной период.</td>
+    </tr>
+    <tr>
+      <td>Z</td>
+      <td>9600.0</td>
+      <td>Доход от реализации продукции составит 9600.00 ден.ед. за исследуемый временной период</td>
+    </tr>
+  </tbody>
+</table>
+    <h2>Анализ статуса ресурсов</h2>
+    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Ресурс</th>
+      <th>Ассоциируемая дополнительная переменная</th>
+      <th>Значение ассоциируемой дополнительной переменной</th>
+      <th>Статус ресурса</th>
+      <th>Интерпретация</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>P1</td>
+      <td>x4</td>
+      <td>0.0</td>
+      <td>Дефицитный</td>
+      <td>Ресурс Р1 полностью потреблен. Увеличение запаса ресурса Р1 позволит увеличить доход от реализации продукции</td>
+    </tr>
+    <tr>
+      <td>P2</td>
+      <td>x5</td>
+      <td>0.0</td>
+      <td>Дефицитный</td>
+      <td>Ресурс Р2 полностью потреблен. Увеличение запаса ресурса Р2 позволит увеличить доход от реализации продукции</td>
+    </tr>
+    <tr>
+      <td>P3</td>
+      <td>x6</td>
+      <td>1200.0</td>
+      <td>Недефицитный</td>
+      <td>Ресурс Р3 потреблен не полностью. Увеличение запаса ресурса Р3 не позволит увеличить доход от реализации продукции</td>
+    </tr>
+  </tbody>
+</table>
+    <h2>Анализ ценности ресурса</h2>
+    <table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>Дополнительная переменная</th>
+<th>Оценка дополнительной переменной</th>
+<th>Интерпретация</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x5</td>
+<td>3.0</td>
+<td rowspan="3">Порядок увеличения ценности: Р2, Р1, Р3</td>
+</tr>
+<tr>
+<td>x4</td>
+<td>2.0</td>
+
+</tr>
+<tr>
+<td>x6</td>
+<td>0.0</td>
+
+</tr>
+</tbody>
+</table>
+    </body>
+    </html>
+    
