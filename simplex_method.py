@@ -299,4 +299,5 @@ if __name__ == "__main__":
     # A_ub = np.array([[2, 1, 1], [1, 2, 3], [2, 2, 1]])
     # b_ub = np.array([2, 5, 6])
 
-    run_simplex_analysis(c, A_ub, b_ub)
+    # run_simplex_analysis(c, A_ub, b_ub)
+    pass

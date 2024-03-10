@@ -92,9 +92,7 @@ def m_method(c: NDArray, A: NDArray, b: NDArray):
                 tableau = np.delete(tableau, -1, axis=0)
                 return simplex_method_(tableau, var_names, basis, iterations)
             elif np.any(tableau[-1] > 0):
-                print(
-                    "Нет допустимого решения, так как искусственные переменные остались в базисе."
-                )
+                print("Нет допустимого решения, так как искусственные переменные остались в базисе.")
                 return [], [], None, []
 
         # Определение разрешающей колонки
@@ -139,11 +137,9 @@ def m_method(c: NDArray, A: NDArray, b: NDArray):
             if i != pivot_row:
                 tableau[i, :] -= tableau[i, pivot_col] * tableau[pivot_row, :]
 
+
 def run_m_method_analysis(c: NDArray, A: NDArray, b: NDArray):
-    # Решение тестового примера методом симплекса
-    print(c)
-    print(A)
-    print(b)
+    # Решение тестового примера м-методом
     X, X_, Z, iterations = m_method(c, A, b)
 
     # Проверка на наличие решения
@@ -169,6 +165,7 @@ def run_m_method_analysis(c: NDArray, A: NDArray, b: NDArray):
     # Сохранение результатов в HTML документ
     write_html_document(method_iterations, solution_table,
                         resource_status_table, resource_value_table, 'templates/m_method.html')
+
 
 if __name__ == "__main__":
     # Тестовый пример

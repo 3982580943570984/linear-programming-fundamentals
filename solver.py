@@ -12,11 +12,21 @@ def index():
     if request.method == 'POST':
         print(request.form)
 
+        # Определяем количество переменных и уравнений
         variables_count = int(request.form['variablesCount'])
         equations_count = int(request.form['equationsCount'])
 
+        # Определяем коэффициенты целевого уравнения
+        objective_coeffs = []
+        for i in range(variables_count):
+            coeff_name = f"c_{i + 1}"
+            if coeff_name in request.form:
+                objective_coeffs.append(request.form[coeff_name])
+
+        # Определяем коэффициенты уравнений, отношения и правые части уравнений
         coefficients, relations, right_sides = [], [], []
         for i in range(equations_count):
+            # Определяем коэффициенты уравнений
             equation_coeffs = []
             for j in range(variables_count):
                 coeff_name = f"A_{i + 1}_{j + 1}"
@@ -24,25 +34,19 @@ def index():
                     equation_coeffs.append(request.form[coeff_name])
             coefficients.append(equation_coeffs)
 
-            relation_name = f"relation_{i + 1}"
-            if relation_name in request.form:
-                relations.append(request.form[relation_name])
-
+            # Определяем отношения
             right_side_name = f"b_{i + 1}"
             if right_side_name in request.form:
                 right_sides.append(request.form[right_side_name])
 
-        objective_coeffs = []
-        for i in range(variables_count):
-            coeff_name = f"c_{i + 1}"
-            if coeff_name in request.form:
-                objective_coeffs.append(request.form[coeff_name])
+            # Определяем правые части уравнений
+            relation_name = f"relation_{i + 1}"
+            if relation_name in request.form:
+                relations.append(request.form[relation_name])
 
-        objective_coeffs = [
-            int(objective_coeff) for objective_coeff in objective_coeffs
-        ]
-        coefficients = [[int(coefficient) for coefficient in row]
-                        for row in coefficients]
+        # Преобразуем строковые значения в целочисленные
+        objective_coeffs = [int(objective_coeff) for objective_coeff in objective_coeffs]
+        coefficients = [[int(coefficient) for coefficient in row] for row in coefficients]
         right_sides = [int(right_side) for right_side in right_sides]
 
         objective_coeffs_before = np.array(objective_coeffs)
@@ -67,9 +71,9 @@ def index():
 
         use_m_method = True if count != len(right_sides) else False
 
-        c = np.array(objective_coeffs) * -1
         A = np.array(coefficients)
         b = np.array(right_sides)
+        c = np.array(objective_coeffs) * -1
 
         print(c)
         print(A)
