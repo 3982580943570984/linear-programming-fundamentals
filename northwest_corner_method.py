@@ -83,13 +83,14 @@ if __name__ == "__main__":
         if components_count == (supply.shape[0] + demand.shape[0] - 1):
             print("Найденное решение является базисным")
             print("Найденное решение является невырожденным")
-            print(f"Допустимое решение: \n{X}")
-            supplies = np.argwhere(X > 0)
-            for i, j in supplies:
-                print(f"Поставщик {i + 1} поставил {X[i, j]} груза {j + 1} потребителю")
-            Z = np.sum(X * cost)
-            print(f"Начальное значение функции: {Z}")
         else:
             print("Найденное решение не является базисным")
             print("Найденное решение является вырожденным")
+        print(f"Допустимое решение: \n{X}")
+        supplies = np.argwhere(X > 0)
+        for i, j in supplies:
+            print(f"Поставщик {i + 1} поставил {X[i, j]} груза {j + 1} потребителю")
+        Z = np.sum(X * cost)
+        print(f"Начальное значение функции: {Z}")
         print()
+
