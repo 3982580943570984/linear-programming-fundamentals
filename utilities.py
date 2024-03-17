@@ -1,9 +1,10 @@
-from typing import List, Tuple
+from typing import List, Tuple, Any
 
 import numpy as np
+from numpy.typing import NDArray
 
 
-def to_canonical(A: np.ndarray, b: np.ndarray, c: np.ndarray, signs: List[str]) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def to_canonical(A: NDArray[Any], b: NDArray[Any], c: NDArray[Any], signs: List[str]) -> Tuple[NDArray[Any], NDArray[Any], NDArray[Any]]:
     slack_size = sum(sign in ['<=', '<', '>=', '>'] for sign in signs)
 
     for i, sign in enumerate(signs):

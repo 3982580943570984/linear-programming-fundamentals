@@ -1,7 +1,10 @@
+from typing import List, Tuple, Any
+
 import numpy as np
+from numpy.typing import NDArray
 
 
-def balance_supply_demand(supply: np.ndarray, demand: np.ndarray, cost: np.ndarray):
+def balance_supply_demand(supply: NDArray[Any], demand: NDArray[Any], cost: NDArray[Any]):
     supply_total = np.sum(supply)
     demand_total = np.sum(demand)
     
@@ -19,11 +22,13 @@ def balance_supply_demand(supply: np.ndarray, demand: np.ndarray, cost: np.ndarr
     return supply, demand, cost
 
 
-def northwest_corner_method(supply: np.ndarray, demand: np.ndarray):
+def northwest_corner_method(supply: NDArray[Any], demand: NDArray[Any]):
     i, j = 0, 0
     m, n = len(supply), len(demand)
     X = np.zeros((m, n))
+    basis_indices: List[Tuple[int, int]] = []
     while i != m and j != n:
+        basis_indices.append((i, j))
         if supply[i] <= demand[j]:
             demand[j] -= supply[i]
             X[i][j] = supply[i]
@@ -32,7 +37,7 @@ def northwest_corner_method(supply: np.ndarray, demand: np.ndarray):
             supply[i] -= demand[j]
             X[i][j] = demand[j]
             j += 1
-    return X
+    return X, basis_indices
 
 
 if __name__ == "__main__":
@@ -78,7 +83,7 @@ if __name__ == "__main__":
     for i, (supply, demand, cost) in enumerate(zip(suppliers, demanders, costs)):
         print(f"#{i}")
         supply, demand, cost = balance_supply_demand(supply, demand, cost)
-        X = northwest_corner_method(supply.copy(), demand.copy())
+        X, basis_indices = northwest_corner_method(supply.copy(), demand.copy())
         components_count = np.count_nonzero(X)
         if components_count == (supply.shape[0] + demand.shape[0] - 1):
             print("Найденное решение является базисным")
