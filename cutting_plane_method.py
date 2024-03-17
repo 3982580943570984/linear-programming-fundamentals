@@ -87,15 +87,11 @@ def create_m_method_interpretations():
 
 def cutting_plane_method(A: np.ndarray, b: np.ndarray, c: np.ndarray) -> np.ndarray:
     # Определяем наличие начального базиса
-    count = np.sum((np.vstack([A, c]).sum(axis=0) == 1) & (np.count_nonzero(np.vstack([A, c]), axis=0) == 1))
-    if count != A.shape[0]:
-        A, b, c = m_method(A, b, c)
+    # count = np.sum((np.vstack([A, c]).sum(axis=0) == 1) & (np.count_nonzero(np.vstack([A, c]), axis=0) == 1))
+    # if count != A.shape[0]:
+    #     A, b, c = m_method(A, b, c)
 
     while True:
-        # Запоминаем состояние текущей итерации
-        g.cutting_plane_method_iterations.append((A.copy(), b.copy(), c.copy()))
-        g.cutting_plane_method_equations.append('')
-
         # Шаг 1: нахождение оптимального решения задачи без учета условия целочисленности
         X = dual_simplex_method(A, b, c)
         X = selective_rounding(X)
@@ -113,8 +109,6 @@ def cutting_plane_method(A: np.ndarray, b: np.ndarray, c: np.ndarray) -> np.ndar
         if not contains_fractional_part:
             raise ValueError("Целочисленное решение отсутствует.")
 
-        g.cutting_plane_method_equations[-1] = generate_equation(equation_fractional_parts, -modf(b[equation_index])[0])
-
         column = np.zeros(A.shape[0])
         column = np.hstack([column, [1]])
         column = column.reshape(-1, 1)
@@ -124,12 +118,13 @@ def cutting_plane_method(A: np.ndarray, b: np.ndarray, c: np.ndarray) -> np.ndar
         b = np.hstack([b, [-modf(b[equation_index])[0]]])
         c = np.hstack([c, [0]])
 
+        # Запоминаем состояние текущей итерации
+        g.cutting_plane_method_iterations.append((A.copy(), b.copy(), c.copy()))
+        g.cutting_plane_method_equations.append(generate_equation(equation_fractional_parts, -modf(b[equation_index])[0]))
+
 
 def create_cutting_plane_interpretations():
-    interpretations = []
-    for iteration in g.cutting_plane_method_iterations:
-        A, b, c = iteration
-        
+    for iteration, (A, b, c) in enumerate(g.cutting_plane_method_iterations):
         # Строим таблицу
         tableau = np.vstack([
             np.hstack([A, b.reshape(-1, 1)]),
@@ -151,15 +146,12 @@ def create_cutting_plane_interpretations():
         # Переводим таблицу в HTML представление
         df = pd.DataFrame(tableau, columns=columns, index=indices).map(lambda x: str(Fraction(x).limit_denominator())).to_html(index=True) #type: ignore
 
-        interpretations.append(f"<h2>Итерация метода Гомори {len(interpretations)}</h2>" + df)
-    return interpretations
+        g.interpretations[iteration].append(f"<h2>Итерация метода Гомори</h2>" + df)
 
 
 def generate_equation(equation_fractional_parts, right_side) -> str:
-    equation_fractional_parts = selective_rounding(equation_fractional_parts)
-    
     x = symbols(f'x1:{len(equation_fractional_parts)+1}')
-    left_side = sum([-coeff * var for coeff, var in zip(equation_fractional_parts, x)])
+    left_side = sum([round(-coeff, 2) * var for coeff, var in zip(equation_fractional_parts, x)])
     
     equation = latex(Eq(left_side, np.around(right_side, decimals=1)))
     

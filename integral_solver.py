@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-from sympy import Matrix
 
 import numpy as np
 
@@ -79,10 +78,16 @@ def create_solution_extremum(Z: float) -> str:
 
 
 def create_interpretation(X: np.ndarray, Z: float):
-    m_method_interpretations = create_m_method_interpretations()
-    cutting_plane_method_interpretations = create_cutting_plane_interpretations()
-    dual_simplex_method_interpretations = create_dual_simplex_interpretations()
-    simplex_interpretations = create_simplex_interpretations()
+    create_dual_simplex_interpretations()
+    create_simplex_interpretations()
+    create_cutting_plane_interpretations()
+
+    for i, equation in enumerate(g.cutting_plane_method_equations):
+        g.interpretations[i].append(equation)
+
+    combined_interpretations = []
+    for key in sorted(g.interpretations):
+        combined_interpretations.extend(g.interpretations[key])
 
     html_document = f"""
     <!doctype html>
@@ -107,14 +112,8 @@ def create_interpretation(X: np.ndarray, Z: float):
     {create_optimal_solution(X)}
     <h1>Экстремум целевой функции</h1>
     {create_solution_extremum(Z)}
-    <h1>М-метод</h1>
-    {"".join(m_method_interpretations) if len(m_method_interpretations) != 0 else "<h2>М-метод не был применен</h2>"}
     <h1>Метод Гомори</h1>
-    {"".join([interpretation + equation for interpretation, equation in zip(cutting_plane_method_interpretations, g.cutting_plane_method_equations)])}
-    <h1>Двойственный симплекс-метод</h1>
-    {"".join(dual_simplex_method_interpretations)}
-    <h1>Симплекс-метод</h1>
-    {"".join(simplex_interpretations)}
+    {"".join(combined_interpretations)}
     </body>
     </html>
     """
@@ -124,3 +123,4 @@ def create_interpretation(X: np.ndarray, Z: float):
 
 if __name__ == "__main__":
     app.run(debug=True)
+        

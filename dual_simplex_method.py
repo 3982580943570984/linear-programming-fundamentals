@@ -10,9 +10,6 @@ from utilities import to_canonical
 
 def simplex_method(A: np.ndarray, b: np.ndarray, c: np.ndarray) -> np.ndarray:
     while True:
-        # Запоминаем состояние текущей итерации
-        g.simplex_method_iterations.append((A.copy(), b.copy(), c.copy()))
-
         # Шаг 1: проверка текущего допустимого базисного решения
         if np.all(c >= 0):
             break
@@ -40,6 +37,10 @@ def simplex_method(A: np.ndarray, b: np.ndarray, c: np.ndarray) -> np.ndarray:
                 A[i] -= A[i, p] * A[q]
         c -= c[p] * A[q]
 
+        # Запоминаем состояние текущей итерации
+        iteration_count = len(g.cutting_plane_method_iterations)
+        g.simplex_method_iterations[iteration_count].append(((A.copy(), b.copy(), c.copy())))
+
     # Определяем решение
     X = np.zeros(A.shape[1])
     for i in range(len(X)):
@@ -51,41 +52,35 @@ def simplex_method(A: np.ndarray, b: np.ndarray, c: np.ndarray) -> np.ndarray:
     return X
 
 
-def create_simplex_interpretations() -> List[str]:
-    interpretations = []
-    for iteration in g.simplex_method_iterations:
-        A, b, c = iteration
-        
-        # Строим таблицу
-        tableau = np.vstack([
-            np.hstack([A, b.reshape(-1, 1)]),
-            np.hstack([c, [0]])
-        ])
-        
-        # Определяем названия столбцов
-        columns: List[str] = ([f"x{i}" for i in range(A.shape[1])])
-        columns.append('b')
+def create_simplex_interpretations():
+    for iteration, state in g.simplex_method_iterations.items():
+        for A, b, c in state:
+            # Строим таблицу
+            tableau = np.vstack([
+                np.hstack([A, b.reshape(-1, 1)]),
+                np.hstack([c, [0]])
+            ])
+            
+            # Определяем названия столбцов
+            columns: List[str] = ([f"x{i}" for i in range(A.shape[1])])
+            columns.append('b')
 
-        # Определяем названия строк
-        indices: List[str] = []
-        for i in range(A.shape[1]):
-            column = A[:, i]
-            if np.count_nonzero(column) == 1 and column.sum() == 1 and c[i] == 0:
-                indices.append(f'x{i}')
-        indices.append('Z')
+            # Определяем названия строк
+            indices: List[str] = []
+            for i in range(A.shape[1]):
+                column = A[:, i]
+                if np.count_nonzero(column) == 1 and column.sum() == 1 and c[i] == 0:
+                    indices.append(f'x{i}')
+            indices.append('Z')
 
-        # Переводим таблицу в HTML представление
-        df = pd.DataFrame(tableau, columns=columns, index=indices).map(lambda x: str(Fraction(x).limit_denominator())).to_html(index=True) #type: ignore
+            # Переводим таблицу в HTML представление
+            df = pd.DataFrame(tableau, columns=columns, index=indices).map(lambda x: str(Fraction(x).limit_denominator())).to_html(index=True) #type: ignore
 
-        interpretations.append(f"<h2>Итерация симплекс-метода {len(interpretations)}</h2>" + df)
-    return interpretations
+            g.interpretations[iteration].append(f"<h2>Итерация симплекс-метода</h2>" + df)
 
 
 def dual_simplex_method(A: np.ndarray, b: np.ndarray, c: np.ndarray) -> np.ndarray:
     while True:
-        # Запоминаем состояние текущей итерации
-        g.dual_simplex_method_iterations.append((A.copy(), b.copy(), c.copy()))
-
         # Шаг 1: выбор способа решения задачи
         if np.all(b >= 0):
             return simplex_method(A, b, c)
@@ -114,35 +109,36 @@ def dual_simplex_method(A: np.ndarray, b: np.ndarray, c: np.ndarray) -> np.ndarr
                 A[i] -= A[i, p] * A[q]
         c -= c[p] * A[q]
 
+        # Запоминаем состояние текущей итерации
+        iteration_count = len(g.cutting_plane_method_iterations)
+        g.dual_simplex_method_iterations[iteration_count].append(((A.copy(), b.copy(), c.copy())))
+
 
 def create_dual_simplex_interpretations():
-    interpretations = []
-    for iteration in g.dual_simplex_method_iterations:
-        A, b, c = iteration
-        
-        # Строим таблицу
-        tableau = np.vstack([
-            np.hstack([A, b.reshape(-1, 1)]),
-            np.hstack([c, [0]])
-        ])
-        
-        # Определяем названия столбцов
-        columns: List[str] = ([f"x{i}" for i in range(A.shape[1])])
-        columns.append('b')
+    for iteration, state in g.dual_simplex_method_iterations.items():
+        for A, b, c in state:
+            # Строим таблицу
+            tableau = np.vstack([
+                np.hstack([A, b.reshape(-1, 1)]),
+                np.hstack([c, [0]])
+            ])
+            
+            # Определяем названия столбцов
+            columns: List[str] = ([f"x{i}" for i in range(A.shape[1])])
+            columns.append('b')
 
-        # Определяем названия строк
-        indices: List[str] = []
-        for i in range(A.shape[1]):
-            column = A[:, i]
-            if np.count_nonzero(column) == 1 and column.sum() == 1 and c[i] == 0:
-                indices.append(f'x{i}')
-        indices.append('Z')
+            # Определяем названия строк
+            indices: List[str] = []
+            for i in range(A.shape[1]):
+                column = A[:, i]
+                if np.count_nonzero(column) == 1 and column.sum() == 1 and c[i] == 0:
+                    indices.append(f'x{i}')
+            indices.append('Z')
 
-        # Переводим таблицу в HTML представление
-        df = pd.DataFrame(tableau, columns=columns, index=indices).map(lambda x: str(Fraction(x).limit_denominator())).to_html(index=True) #type: ignore
+            # Переводим таблицу в HTML представление
+            df = pd.DataFrame(tableau, columns=columns, index=indices).map(lambda x: str(Fraction(x).limit_denominator())).to_html(index=True) #type: ignore
 
-        interpretations.append(f"<h2>Итерация двойственного симплекс-метода {len(interpretations)}</h2>" + df)
-    return interpretations
+            g.interpretations[iteration].append(f"<h2>Итерация двойственного симплекс-метода</h2>" + df)
 
 
 if __name__ == "__main__":
